@@ -17,11 +17,11 @@ const Navbar = () => {
 
     const navLinks = [
         { name: 'Home', path: '/' },
-        { name: 'Services', path: '#services' },
-        { name: 'Process', path: '#process' },
-        { name: 'Projects', path: '#projects' },
-        { name: 'About', path: '#about' },
-        { name: 'Contact', path: '#contact' },
+        { name: 'Services', path: '/services' },
+        { name: 'Projects', path: '/projects' },
+        { name: 'Pricing', path: '/pricing' },
+        { name: 'About', path: '/about' },
+        { name: 'Contact', path: '/contact' },
     ];
 
     return (
@@ -46,17 +46,17 @@ const Navbar = () => {
                 {/* Desktop Links */}
                 <div className="hidden md:flex items-center space-x-8">
                     {navLinks.map((link) => (
-                        <a key={link.name} href={link.path} className="text-[15px] font-medium text-[#c4c4c4] hover:text-white transition-colors">
+                        <Link key={link.name} to={link.path} className="text-[15px] font-medium text-[#c4c4c4] hover:text-white transition-colors">
                             {link.name}
-                        </a>
+                        </Link>
                     ))}
                 </div>
 
                 {/* CTA Button */}
                 <div className="hidden md:block">
-                    <a href="#contact" className="bg-brand-green text-[#050505] px-6 py-2.5 rounded-md font-bold text-[15px] hover:brightness-110 transition-all">
+                    <Link to="/contact" className="bg-brand-green text-[#050505] px-6 py-2.5 rounded-md font-bold text-[15px] hover:brightness-110 transition-all">
                         Let's Talk
-                    </a>
+                    </Link>
                 </div>
 
                 {/* Mobile menu button */}
@@ -78,18 +78,18 @@ const Navbar = () => {
                         className="absolute top-full left-0 w-full glass-header border-t border-white/10 md:hidden flex flex-col items-center py-6 space-y-4"
                     >
                         {navLinks.map((link) => (
-                            <a
+                            <Link
                                 key={link.name}
-                                href={link.path}
+                                to={link.path}
                                 className="text-white hover:text-brand-green text-lg font-medium"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 {link.name}
-                            </a>
+                            </Link>
                         ))}
-                        <a href="#contact" className="bg-brand-green text-brand-dark px-8 py-3 rounded-lg font-semibold w-5/6 text-center mt-4">
+                        <Link to="/contact" className="bg-brand-green text-brand-dark px-8 py-3 rounded-lg font-semibold w-5/6 text-center mt-4">
                             Let's Talk
-                        </a>
+                        </Link>
                     </motion.div>
                 )}
             </AnimatePresence>

@@ -7,21 +7,28 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: true,
   credentials: true
 }));
 app.use(express.json());
 
 // Routes
 const contactRoutes = require('./routes/contact');
+const authRoutes = require('./routes/auth.routes');
+const projectRoutes = require('./routes/projects.routes');
+const pricingRoutes = require('./routes/pricing.routes');
+
 app.use('/api/contact', contactRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/pricing', pricingRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'API is running' });
 });
 
 // Database Connection
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/devflow-clone';
 
 mongoose

@@ -1,10 +1,11 @@
-import { motion } from 'framer-motion';
+import { motion, useInView, animate } from 'framer-motion';
+import { useRef, useEffect } from 'react';
 
 const stats = [
-    { value: "5+", label: "Projects Delivered", icon: "🚀" },
-    { value: "100%", label: "Client Satisfaction", icon: "⭐" },
-    { value: "3+", label: "Happy Clients", icon: "🤝" },
-    { value: "2 Years", label: "Industry Experience", icon: "📈" }
+    { value: 5, suffix: "+", label: "Projects Delivered", icon: "🚀" },
+    { value: 100, suffix: "%", label: "Client Satisfaction", icon: "⭐" },
+    { value: 3, suffix: "+", label: "Happy Clients", icon: "🤝" },
+    { value: 2, suffix: " Years", label: "Industry Experience", icon: "📈" }
 ];
 
 const technologies = [
@@ -16,6 +17,26 @@ const technologies = [
     { name: "Tailwind", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" },
     { name: "AWS", logo: "https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" },
 ];
+
+const AnimatedCounter = ({ from, to, suffix, duration = 2.5 }) => {
+    const nodeRef = useRef(null);
+    const inView = useInView(nodeRef, { once: true, margin: "-100px" });
+
+    useEffect(() => {
+        if (inView && nodeRef.current) {
+            const controls = animate(from, to, {
+                duration: duration,
+                ease: "easeOut",
+                onUpdate(value) {
+                    nodeRef.current.textContent = Math.round(value) + suffix;
+                }
+            });
+            return () => controls.stop();
+        }
+    }, [from, to, suffix, duration, inView]);
+
+    return <span ref={nodeRef}>{from}{suffix}</span>;
+};
 
 const StatsMarquee = () => {
     // Duplicate for seamless loop
@@ -36,7 +57,9 @@ const StatsMarquee = () => {
                             className="flex flex-col items-center"
                         >
                             <span className="text-4xl mb-4">{stat.icon}</span>
-                            <h3 className="text-[56px] font-display font-black text-white mb-2 tracking-tight leading-none">{stat.value}</h3>
+                            <h3 className="text-5xl md:text-[56px] font-display font-black text-white mb-2 tracking-tight leading-none">
+                                <AnimatedCounter from={0} to={stat.value} suffix={stat.suffix} />
+                            </h3>
                             <p className="text-[#888888] text-[15px] font-medium">{stat.label}</p>
                         </motion.div>
                     ))}

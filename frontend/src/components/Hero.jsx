@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Code, Zap } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import ParticleSphere from './ParticleSphere';
 
 const Hero = () => {
     const dynamicWords = ["Web Applications", "Cloud Systems", "Custom Software", "AI Solutions", "Android Applications"];
@@ -14,10 +16,9 @@ const Hero = () => {
     }, []);
 
     return (
-        <section className="relative min-h-screen flex items-center justify-center pt-24 overflow-hidden bg-grid-pattern">
-            {/* Background Glows */}
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-green/10 rounded-full blur-[120px] pointer-events-none"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <section className="relative min-h-screen flex items-center justify-center pt-24 overflow-hidden bg-[#050505]">
+            {/* Interactive 3D WebGL Background */}
+            <ParticleSphere />
 
             {/* Decorative bg elements */}
             <div className="absolute left-[10%] top-[30%] hidden xl:block opacity-[0.4] font-mono text-white text-[120px] font-thin leading-none pointer-events-none">
@@ -34,7 +35,7 @@ const Hero = () => {
                 ))}
             </div>
 
-            <div className="max-w-4xl mx-auto px-6 text-center z-10">
+            <div className="max-w-4xl mx-auto px-6 text-center z-10 pointer-events-none">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -81,14 +82,14 @@ const Hero = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.3 }}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 mb-10"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 mb-10 pointer-events-auto"
                 >
-                    <a href="#contact" className="w-full sm:w-auto bg-brand-green text-[#050505] px-8 py-3.5 rounded-md font-bold text-[15px] hover:brightness-110 transition-all flex items-center justify-center gap-2">
+                    <Link to="/contact" className="w-full sm:w-auto bg-brand-green text-[#050505] px-8 py-3.5 rounded-md font-bold text-[15px] hover:brightness-110 transition-all flex items-center justify-center gap-2">
                         Talk to Our Experts <ArrowRight size={18} className="ml-1" />
-                    </a>
-                    <a href="#projects" className="w-full sm:w-auto bg-transparent border border-[#333333] text-white px-8 py-3.5 rounded-md font-medium text-[15px] hover:bg-white/5 transition-all">
+                    </Link>
+                    <Link to="/projects" className="w-full sm:w-auto bg-transparent border border-[#333333] text-white px-8 py-3.5 rounded-md font-medium text-[15px] hover:bg-white/5 transition-all">
                         Explore Our Work
-                    </a>
+                    </Link>
                 </motion.div>
 
                 {/* Mockup Editor & Trusted Bar */}
@@ -96,14 +97,14 @@ const Hero = () => {
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.5 }}
-                    className="mt-16 w-full max-w-3xl mx-auto"
+                    className="mt-16 w-full max-w-3xl mx-auto pointer-events-auto"
                 >
-                    <div className="text-center mb-10">
+                    <div className="text-center mb-10 pointer-events-none">
                         <span className="text-[11px] font-bold text-white/30 tracking-[0.15em] uppercase">Trusted by Innovative Companies</span>
                     </div>
 
                     {/* Window */}
-                    <div className="w-full rounded-t-xl bg-[#0F0F0F] border border-[#222] min-h-[300px] border-b-0 overflow-hidden relative shadow-2xl">
+                    <div className="w-full rounded-t-xl bg-[#0F0F0F] border border-[#222] min-h-[300px] border-b-0 overflow-hidden relative shadow-2xl text-left">
                         {/* Title Bar */}
                         <div className="flex items-center justify-between px-4 py-3 bg-[#111] border-b border-[#222]">
                             <div className="flex gap-2 w-12">

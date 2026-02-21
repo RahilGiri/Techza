@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
 
 const services = [
     {
@@ -27,20 +28,56 @@ const services = [
     }
 ];
 
+// Pill animation variants
+const pillVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1 }
+};
+
 const Services = () => {
+    const sectionRef = useRef(null);
+
+    // Scroll-based Parallax for background text
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ["start end", "end start"]
+    });
+
+    // Calculate the parallax translation
+    const bgTranslateX = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
+
     return (
-        <section id="services" className="py-32 bg-brand-dark relative z-10">
-            <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <section ref={sectionRef} id="services" className="py-32 bg-brand-dark relative z-10 overflow-hidden">
+            <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
 
                 {/* Header Section */}
                 <div className="mb-20 max-w-3xl">
-                    <span className="text-brand-green font-bold tracking-wider uppercase text-[11px] mb-6 block">OUR SERVICES</span>
-                    <h2 className="text-4xl md:text-5xl lg:text-[52px] font-display font-black text-white tracking-tight leading-[1.15] mb-8">
+                    <motion.span
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        className="text-brand-green font-bold tracking-wider uppercase text-[11px] mb-6 block"
+                    >
+                        OUR SERVICES
+                    </motion.span>
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                        className="text-4xl md:text-5xl lg:text-[52px] font-display font-black text-white tracking-tight leading-[1.15] mb-8"
+                    >
                         Engineering-First Software<br />Development
-                    </h2>
-                    <p className="text-[#888] text-[17px] leading-relaxed max-w-2xl">
+                    </motion.h2>
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2 }}
+                        className="text-[#888] text-[17px] leading-relaxed max-w-2xl"
+                    >
                         We specialize in building software that solves real business problems — from high-performance websites to complex enterprise applications. Every project is built with code quality, performance, and long-term maintainability in mind.
-                    </p>
+                    </motion.p>
                 </div>
 
                 {/* 2x2 Grid Section */}
@@ -48,43 +85,65 @@ const Services = () => {
                     {services.map((service, index) => (
                         <motion.div
                             key={index}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, margin: "-100px" }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="bg-[#121212] border border-[#222] rounded-2xl p-8 md:p-10 hover:border-[#333] transition-colors h-full flex flex-col"
+                            transition={{ duration: 0.6, delay: index * 0.15, ease: "easeOut" }}
+                            whileHover={{ scale: 1.02, y: -5 }} // Hover state lift
+                            className="bg-[#121212] border border-[#222] rounded-2xl p-8 md:p-10 hover:border-brand-green/40 hover:shadow-[0_0_40px_rgba(182,255,51,0.05)] transition-all duration-300 h-full flex flex-col group relative overflow-hidden"
                         >
-                            <span className="text-brand-green font-bold tracking-wider uppercase text-[10px] mb-6 block">
+                            {/* Inner ambient glow on hover */}
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-brand-green/5 rounded-full blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+                            <span className="text-brand-green font-bold tracking-wider uppercase text-[10px] mb-6 block drop-shadow-[0_0_10px_rgba(182,255,51,0.3)]">
                                 {service.tag}
                             </span>
 
-                            <h3 className="text-[22px] font-bold text-white mb-4">
+                            <h3 className="text-[22px] font-bold text-white mb-4 relative z-10">
                                 {service.title}
                             </h3>
 
-                            <p className="text-[#888] text-[15px] leading-relaxed mb-8 flex-grow">
+                            <p className="text-[#888] text-[15px] leading-relaxed mb-8 flex-grow relative z-10">
                                 {service.description}
                             </p>
 
-                            <div className="flex flex-wrap gap-2 mt-auto">
+                            <motion.div
+                                className="flex flex-wrap gap-2 mt-auto relative z-10"
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true }}
+                                variants={{
+                                    visible: {
+                                        transition: {
+                                            staggerChildren: 0.1, // Stagger the pills
+                                            delayChildren: index * 0.15 + 0.3
+                                        }
+                                    }
+                                }}
+                            >
                                 {service.pills.map((pill, pIndex) => (
-                                    <span
+                                    <motion.span
                                         key={pIndex}
-                                        className="bg-white/5 border border-white/5 rounded-full px-4 py-1.5 text-[12px] text-[#888] font-medium hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                                        variants={pillVariants}
+                                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                        className="bg-[#1a1a1a] border border-[#333] rounded-full px-4 py-1.5 text-[12px] text-[#aaa] font-medium hover:text-white hover:border-brand-green/50 transition-colors cursor-pointer"
                                     >
                                         {pill}
-                                    </span>
+                                    </motion.span>
                                 ))}
-                            </div>
+                            </motion.div>
                         </motion.div>
                     ))}
                 </div>
-
-                {/* Background Typography decoration - purely visual based on the faint text behind cards in the image */}
-                <div className="absolute top-[40%] left-1/2 -translate-x-1/2 w-full text-center overflow-hidden pointer-events-none z-0 opacity-5">
-                    <span className="text-[250px] font-display font-black text-white whitespace-nowrap tracking-tighter mix-blend-overlay">SOFTWARE</span>
-                </div>
             </div>
+
+            {/* Background Parallax Typography decoration */}
+            <motion.div
+                className="absolute top-[30%] left-[-10%] w-[200%] text-left overflow-hidden pointer-events-none z-0 opacity-5"
+                style={{ x: bgTranslateX }}
+            >
+                <span className="text-[120px] md:text-[250px] font-display font-black text-white whitespace-nowrap tracking-tighter mix-blend-overlay">SOFTWARE ENGINEERING</span>
+            </motion.div>
         </section>
     );
 };
