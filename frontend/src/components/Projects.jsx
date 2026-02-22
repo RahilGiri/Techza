@@ -95,12 +95,14 @@ const ProjectCard = ({ project, index }) => {
                         alt={project.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-in-out"
                     />
-                    {/* Hover overlay button */}
-                    <div className="absolute inset-0 z-20 flex items-center justify-center translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                        <a href={project.link || "#"} className="bg-brand-green text-[#050505] font-bold px-7 py-3 rounded-full text-sm flex items-center gap-2 hover:scale-105 transition-transform backdrop-blur-md shadow-[0_0_20px_rgba(182,255,51,0.4)]">
-                            View Live Site <span className="text-xl leading-none -mt-1">↗</span>
-                        </a>
-                    </div>
+                    {/* Hover overlay button - Only show if liveLink exists */}
+                    {project.liveLink && (
+                        <div className="absolute inset-0 z-20 flex items-center justify-center translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                            <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className="bg-brand-green text-[#050505] font-bold px-7 py-3 rounded-full text-sm flex items-center gap-2 hover:scale-105 transition-transform backdrop-blur-md shadow-[0_0_20px_rgba(182,255,51,0.4)]">
+                                View Live Site <span className="text-xl leading-none -mt-1">↗</span>
+                            </a>
+                        </div>
+                    )}
                 </div>
 
                 {/* Content */}
@@ -201,22 +203,14 @@ const Projects = () => {
                 </motion.div>
 
                 {/* Filter Bar */}
-                <div className="w-full relative mb-16">
-                    {/* Gradient masks for smooth edge fading */}
-                    <div className="absolute left-0 top-0 bottom-4 w-12 bg-gradient-to-r from-[#050505] to-transparent z-10 pointer-events-none"></div>
-                    <div className="absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-[#050505] to-transparent z-10 pointer-events-none"></div>
-
+                <div className="w-full relative mb-16 px-4">
                     <motion.div
                         variants={staggerContainer}
                         initial="hidden"
                         whileInView="show"
                         viewport={{ once: true, margin: "-50px" }}
-                        className="flex flex-nowrap overflow-x-auto gap-3 pb-8 px-8 no-scrollbar md:justify-center"
-                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                        className="flex flex-wrap justify-center gap-3 pb-8"
                     >
-                        <style>{`
-                            .no-scrollbar::-webkit-scrollbar { display: none; }
-                        `}</style>
                         {categories.map((cat, i) => (
                             <motion.button
                                 key={cat}

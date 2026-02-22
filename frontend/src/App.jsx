@@ -10,6 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 /* Components */
 import ScrollToTop from './components/ScrollToTop';
+import GlobalBackground from './components/GlobalBackground';
 
 /* Public Pages */
 import Home from './pages/Home';
@@ -26,6 +27,7 @@ import AdminDashboard from './pages/admin/Dashboard';
 function App() {
   return (
     <Router basename="/Techza">
+      <GlobalBackground />
       <AuthProvider>
         <ScrollToTop />
         <Routes>

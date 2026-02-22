@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { Check } from 'lucide-react';
 
 const steps = [
@@ -34,101 +34,134 @@ const steps = [
 ];
 
 const ProcessCard = ({ step, index }) => {
+    const cardRef = useRef(null);
+    const isInView = useInView(cardRef, { once: false, margin: "-20% 0px -20% 0px" });
+
     return (
-        <div className="w-[85vw] md:w-[60vw] lg:w-[45vw] flex-shrink-0 relative h-[500px] flex items-center group">
-            {/* Connecting line */}
-            <div className={`absolute top-1/2 left-0 w-full h-[2px] bg-white/10 -translate-y-1/2 -z-10 ${index === steps.length - 1 ? 'hidden' : ''}`}></div>
+        <div ref={cardRef} className="relative pl-10 md:pl-0 w-full mb-16 md:mb-24 last:mb-0 group">
 
-            <div className="w-full bg-[#0a0a0a] border border-[#222] rounded-[2rem] p-8 md:p-12 shadow-[0_10px_40px_rgba(0,0,0,0.5)] relative overflow-hidden hover:border-[#333] transition-all hover:-translate-y-2 h-full flex flex-col justify-between">
-                {/* Ambient Internal Glow */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-brand-green/5 blur-[80px] rounded-full pointer-events-none group-hover:bg-brand-green/10 transition-colors duration-500"></div>
+            {/* Connecting Horizontal Line to the vertical track (Desktop only) */}
+            <div className={`hidden md:block absolute top-[60px] w-12 h-[2px] transition-colors duration-500 ${index % 2 === 0 ? 'right-1/2' : 'left-1/2'} ${isInView ? 'bg-brand-green' : 'bg-[#222]'}`}></div>
 
-                <div>
-                    <div className="flex flex-col md:flex-row md:items-start justify-between mb-8 gap-4 relative z-10">
-                        <div className="flex items-center gap-6">
-                            <div className="w-14 h-14 rounded-full bg-brand-green flex items-center justify-center shadow-[0_0_20px_rgba(182,255,51,0.2)]">
-                                <span className="text-[#050505] font-black text-xl">{step.num}</span>
-                            </div>
-                            <h3 className="text-3xl font-bold text-white">{step.title}</h3>
-                        </div>
-                        <span className="text-brand-green text-xs font-bold tracking-widest bg-brand-green/10 border border-brand-green/20 px-4 py-2 rounded-full uppercase self-start md:self-auto shrink-0">
-                            {step.week}
-                        </span>
-                    </div>
+            <div className={`flex flex-col md:flex-row items-center w-full ${index % 2 === 0 ? 'md:justify-start' : 'md:justify-end'}`}>
 
-                    <p className="text-[#888] text-[17px] leading-relaxed relative z-10">
-                        {step.description}
-                    </p>
-                </div>
+                <motion.div
+                    initial={{ opacity: 0, x: index % 2 === 0 ? 50 : -50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-10%" }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    className={`w-full md:w-[45%] bg-[#0a0a0a] border ${isInView ? 'border-brand-green/50 shadow-[0_0_30px_rgba(182,255,51,0.1)]' : 'border-[#222]'} rounded-[2rem] p-8 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col`}
+                >
+                    {/* Active State Background Glow */}
+                    <div className={`absolute top-0 right-0 w-64 h-64 bg-brand-green/10 blur-[80px] rounded-full pointer-events-none transition-opacity duration-700 ${isInView ? 'opacity-100' : 'opacity-0'}`}></div>
 
-                <div className="pt-6 border-t border-white/5 flex items-center gap-4 relative z-10 mt-6">
-                    <div className="w-8 h-8 rounded-full bg-brand-green/10 flex items-center justify-center flex-shrink-0">
-                        <Check size={16} className="text-brand-green" />
-                    </div>
                     <div>
-                        <span className="text-[#555] text-xs font-bold uppercase tracking-widest block mb-1">KEY DELIVERABLE</span>
-                        <span className="text-[#ccc] text-[15px] font-medium">{step.deliverable}</span>
+                        <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 gap-4 relative z-10">
+                            <div className="flex items-center gap-5">
+                                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors duration-500 ${isInView ? 'bg-brand-green shadow-[0_0_20px_rgba(182,255,51,0.3)]' : 'bg-[#111] text-[#555]'}`}>
+                                    <span className={`font-black text-lg ${isInView ? 'text-[#050505]' : 'text-[#888]'}`}>{step.num}</span>
+                                </div>
+                                <h3 className={`text-2xl lg:text-3xl font-bold transition-colors duration-500 ${isInView ? 'text-white' : 'text-[#aaa]'}`}>{step.title}</h3>
+                            </div>
+                            <span className={`text-xs font-bold tracking-widest px-4 py-2 rounded-full uppercase self-start shrink-0 transition-colors duration-500 ${isInView ? 'bg-brand-green/10 border border-brand-green/20 text-brand-green' : 'bg-white/5 border border-white/10 text-[#666]'}`}>
+                                {step.week}
+                            </span>
+                        </div>
+
+                        <p className={`text-[16px] leading-relaxed relative z-10 transition-colors duration-500 ${isInView ? 'text-[#ccc]' : 'text-[#666]'}`}>
+                            {step.description}
+                        </p>
+                    </div>
+
+                    <div className={`pt-6 border-t flex items-center gap-4 relative z-10 mt-6 transition-colors duration-500 ${isInView ? 'border-white/10' : 'border-white/5'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-colors duration-500 ${isInView ? 'bg-brand-green/10' : 'bg-[#111]'}`}>
+                            <Check size={16} className={`transition-colors duration-500 ${isInView ? 'text-brand-green' : 'text-[#444]'}`} />
+                        </div>
+                        <div>
+                            <span className="text-[#555] text-xs font-bold uppercase tracking-widest block mb-1">KEY DELIVERABLE</span>
+                            <span className={`text-[14px] font-medium transition-colors duration-500 ${isInView ? 'text-[#eee]' : 'text-[#777]'}`}>{step.deliverable}</span>
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* Node Dot (Desktop Central, Mobile Left) */}
+                <div className={`absolute left-0 md:left-1/2 w-8 h-8 -translate-x-1/2 flex items-center justify-center top-[60px] md:top-[60px] z-20`}>
+                    <div className={`w-full h-full rounded-full transition-all duration-500 flex items-center justify-center ${isInView ? 'bg-[#050505] border-[3px] border-brand-green shadow-[0_0_20px_rgba(182,255,51,0.5)] scale-110' : 'bg-[#151515] border-[3px] border-[#333] scale-100'}`}>
+                        <div className={`w-2 h-2 rounded-full transition-colors duration-500 ${isInView ? 'bg-brand-green' : 'bg-transparent'}`}></div>
                     </div>
                 </div>
+
             </div>
         </div>
     );
 };
 
 const Process = () => {
-    const targetRef = useRef(null);
+    const containerRef = useRef(null);
     const { scrollYProgress } = useScroll({
-        target: targetRef,
+        target: containerRef,
+        offset: ["start center", "end 80%"]
     });
 
-    // Translate the content leftwards (-75% implies sliding 3/4s of its total width off-screen)
-    const x = useTransform(scrollYProgress, [0, 1], ["0%", "-75%"]);
+    const scaleY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
     return (
-        <section ref={targetRef} id="process" className="relative h-[400vh] bg-[#050505] border-t border-white/5">
-            <div className="sticky top-0 h-screen flex items-center overflow-hidden">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-green/5 blur-[150px] rounded-full pointer-events-none transform translate-x-1/2 -translate-y-1/2"></div>
+        <section id="process" className="py-24 md:py-32 bg-[#050505] border-t border-white/5 relative overflow-hidden">
+            {/* Ambient Backgrounds */}
+            <div className="absolute top-[20%] right-[-10%] w-[600px] h-[600px] bg-brand-green/5 blur-[150px] rounded-full pointer-events-none"></div>
 
-                <motion.div style={{ x }} className="flex gap-12 lg:gap-20 px-6 md:px-12 items-center w-max">
+            <div className="max-w-[1300px] mx-auto px-6 md:px-12 relative z-10">
 
-                    {/* Header Block takes space natively */}
-                    <div className="w-[90vw] md:w-[60vw] lg:w-[40vw] flex-shrink-0 flex flex-col justify-center max-w-xl pr-10">
-                        <motion.span
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            className="inline-block px-4 py-1.5 bg-brand-green/10 text-brand-green text-[11px] font-bold uppercase tracking-widest rounded-full mb-6 border border-brand-green/20 w-max"
-                        >
-                            THE ROADMAP
-                        </motion.span>
-                        <motion.h2
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.1 }}
-                            className="text-5xl md:text-6xl lg:text-7xl font-display font-black text-white tracking-tight mb-8 leading-[1.1]"
-                        >
-                            From Chaos to <span className="text-brand-green drop-shadow-[0_0_20px_rgba(182,255,51,0.2)]">Clarity.</span>
-                        </motion.h2>
-                        <motion.p
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.2 }}
-                            className="text-[#888] text-[18px] md:text-[20px] leading-relaxed max-w-md"
-                        >
-                            A transparent, engineering-led process designed to deliver high-quality custom software without the surprises.
-                        </motion.p>
+                {/* Header */}
+                <div className="text-center max-w-3xl mx-auto mb-20 md:mb-32">
+                    <motion.span
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="inline-block px-4 py-1.5 bg-brand-green/10 text-brand-green text-[11px] font-bold uppercase tracking-widest rounded-full mb-6 border border-brand-green/20"
+                    >
+                        THE ROADMAP
+                    </motion.span>
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                        className="text-4xl md:text-5xl lg:text-7xl font-display font-black text-white tracking-tight mb-8 leading-[1.1]"
+                    >
+                        From Chaos to <span className="text-brand-green drop-shadow-[0_0_20px_rgba(182,255,51,0.2)]">Clarity.</span>
+                    </motion.h2>
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2 }}
+                        className="text-[#888] text-[18px] md:text-[20px] leading-relaxed"
+                    >
+                        A transparent, engineering-led process designed to deliver high-quality custom software without the surprises.
+                    </motion.p>
+                </div>
+
+                {/* Timeline Container */}
+                <div ref={containerRef} className="relative w-full max-w-5xl mx-auto">
+
+                    {/* Vertical Background Track */}
+                    <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-[2px] bg-[#222] -translate-x-1/2 md:-translate-x-1/2 rounded-full overflow-hidden">
+                        {/* Animated Fill Track */}
+                        <motion.div
+                            style={{ scaleY, originY: 0 }}
+                            className="absolute top-0 left-0 right-0 w-full bg-brand-green shadow-[0_0_15px_#b6ff33] origin-top h-full"
+                        ></motion.div>
                     </div>
 
-                    {/* Cards */}
-                    {steps.map((step, index) => (
-                        <ProcessCard key={index} step={step} index={index} />
-                    ))}
+                    {/* Timeline Nodes */}
+                    <div className="relative z-10 py-10">
+                        {steps.map((step, index) => (
+                            <ProcessCard key={index} step={step} index={index} />
+                        ))}
+                    </div>
 
-                    {/* Empty block to pad the end of the scroll */}
-                    <div className="w-[10vw] flex-shrink-0"></div>
-                </motion.div>
+                </div>
             </div>
         </section>
     );

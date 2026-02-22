@@ -19,6 +19,10 @@ const projectSchema = new mongoose.Schema({
     image: {
         type: String, // URL or base64
         required: true,
+    },
+    liveLink: {
+        type: String,
+        required: false,
     }
 }, { timestamps: true });
 

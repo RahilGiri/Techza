@@ -33,11 +33,6 @@ const Navbar = () => {
                     <div className="flex flex-col">
                         <span className="text-3xl font-display font-black tracking-tighter leading-none text-white flex items-center">
                             TECHZA
-                            <span className="text-brand-green ml-0.5 -mt-3">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M7 17L17 7" /><path d="M7 7h10v10" />
-                                </svg>
-                            </span>
                         </span>
                         <span className="text-[9px] uppercase font-bold tracking-[0.25em] text-white/50 ml-0.5 mt-1 hidden md:block">Technology</span>
                     </div>

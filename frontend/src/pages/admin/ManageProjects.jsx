@@ -11,7 +11,8 @@ const ManageProjects = () => {
         category: '',
         description: '',
         techStack: '',
-        image: ''
+        image: '',
+        liveLink: ''
     });
     const { token } = useAuth();
 
@@ -93,11 +94,12 @@ const ManageProjects = () => {
                 category: project.category,
                 description: project.description,
                 techStack: project.techStack.join(', '),
-                image: project.image
+                image: project.image,
+                liveLink: project.liveLink || ''
             });
         } else {
             setCurrentProject(null);
-            setFormData({ title: '', category: '', description: '', techStack: '', image: '' });
+            setFormData({ title: '', category: '', description: '', techStack: '', image: '', liveLink: '' });
         }
         setIsModalOpen(true);
     };
@@ -180,6 +182,10 @@ const ManageProjects = () => {
                             <div>
                                 <label className="block text-[#aaa] mb-1">Image URL</label>
                                 <input type="text" name="image" value={formData.image} onChange={handleInputChange} required className="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand-green" />
+                            </div>
+                            <div>
+                                <label className="block text-[#aaa] mb-1">Live Project URL <span className="text-[#555] text-xs">(Optional)</span></label>
+                                <input type="url" name="liveLink" value={formData.liveLink} onChange={handleInputChange} placeholder="https://example.com" className="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand-green" />
                             </div>
 
                             <button type="submit" className="w-full bg-brand-green text-black font-bold py-3 rounded-lg hover:brightness-110 transition-all mt-4">
